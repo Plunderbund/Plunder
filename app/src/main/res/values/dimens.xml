@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <dimen name="media_card.main_image.width">134dp</dimen>
+  <dimen name="media_card.main_image.height">200dp</dimen>
+
+  <dimen name="tv_episode_card.main_image.width">160dp</dimen>
+  <dimen name="tv_episode_card.main_image.height">90dp</dimen>
+</resources>

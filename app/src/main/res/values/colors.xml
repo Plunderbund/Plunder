@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <color name="brand.primary">#212121</color>
+  <color name="brand.primary_dark">#0F0F0F</color>
+  <color name="brand.accent">#3D5AFE</color>
+
+  <color name="white">#FFFFFF</color>
+  <color name="default_header">@color/brand.primary_dark</color>
+  <color name="default_detail">@color/brand.primary_dark</color>
+
+  <color name="card.movie.background">@color/brand.primary_dark</color>
+  <color name="card.genre.background">@color/brand.primary</color>
+</resources>

@@ -1,0 +1,11 @@
+<resources>
+  <string name="main.header.popular_movies">Movies</string>
+  <string name="main.header.popular_tv_shows">TV</string>
+  <string name="main.header.genres">Genres</string>
+  <string name="details.actions.watch">Watch</string>
+  <string name="details.actions.trailer">Trailer</string>
+  <string name="search.headers.movies">Movies</string>
+  <string name="search.headers.tv_shows">TV</string>
+  <string name="download.progress.buffering">Buffering</string>
+  <string name="download.progress.starting">Starting</string>
+</resources>

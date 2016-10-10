@@ -1,0 +1,119 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'me.tatarka.retrolambda'
+
+def versionMajor = 0
+def versionMinor = 1
+def versionPatch = 0
+
+repositories {
+  mavenCentral()
+  maven { url "https://clojars.org/repo/" }
+  maven { url "https://jitpack.io" }
+}
+
+buildscript {
+  repositories {
+    mavenCentral()
+    jcenter()
+  }
+
+  dependencies {
+    classpath 'me.tatarka:gradle-retrolambda:3.3.0-beta4'
+  }
+}
+
+retrolambda {
+  javaVersion JavaVersion.VERSION_1_7
+}
+
+android {
+  compileSdkVersion 24
+  buildToolsVersion "24.0.3"
+
+  defaultConfig {
+    applicationId "com.plunder.plunder"
+    minSdkVersion 21
+    targetSdkVersion 24
+    multiDexEnabled true
+
+    versionCode versionMajor * 10000 + versionMinor * 100 + versionPatch
+    versionName "${versionMajor}.${versionMinor}.${versionPatch}"
+
+    buildConfigField "String", "TMDB_API_KEY", "\"a4b2e4479449209934eb7a2653054c44\""
+    buildConfigField "String", "DOWNLOAD_DIRECTORY", "\"downloads/\""
+  }
+  buildTypes {
+    debug {
+      applicationIdSuffix ".debug"
+      versionNameSuffix "-debug"
+      resValue "string", "app_name", "Plunderbund (debug)"
+    }
+    release {
+      resValue "string", "app_name", "Plunderbund"
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    }
+  }
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+}
+
+dependencies {
+  compile fileTree(include: ['*.jar'], dir: 'libs')
+
+  // support libraries
+  compile 'com.android.support:support-v4:24.2.1'
+  compile 'com.android.support:appcompat-v7:24.2.1'
+  compile 'com.android.support:leanback-v17:24.2.1'
+  compile 'com.android.support:support-annotations:24.2.1'
+  compile 'com.android.support:recommendation:24.2.1'
+  compile 'com.android.support:design:24.2.1'
+  compile 'com.android.support:preference-leanback-v17:24.2.1'
+  compile 'com.android.support:recyclerview-v7:24.2.1'
+  compile 'com.android.support:cardview-v7:24.2.1'
+  compile 'com.android.support:multidex:1.0.1'
+
+  // debugging
+  debugCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
+  releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
+  testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
+  compile 'com.jakewharton.timber:timber:4.3.1'
+  debugCompile 'com.nshmura:strictmode-notifier:0.9.1'
+  releaseCompile 'com.nshmura:strictmode-notifier-no-op:0.9.1'
+
+  // core
+  apt 'com.google.dagger:dagger-compiler:2.7'
+  compile 'com.google.dagger:dagger:2.7'
+  provided 'org.glassfish:javax.annotation:10.0-b28'
+  compile 'com.annimon:stream:1.1.2'
+  compile 'org.greenrobot:eventbus:3.0.0'
+  provided 'com.google.auto.value:auto-value:1.2'
+  apt 'frankiesardo:auto-parcel:1.0.3'
+  compile 'com.google.guava:guava:19.0'
+  compile 'commons-io:commons-io:2.5'
+  compile 'com.jakewharton:butterknife:8.4.0'
+  apt 'com.jakewharton:butterknife-compiler:8.4.0'
+  compile 'com.mikhaellopez:circularprogressbar:1.1.1'
+
+  // rxjava
+  compile 'io.reactivex:rxandroid:1.2.1'
+  compile 'io.reactivex:rxjava:1.2.0'
+  retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:+'
+
+  // networking
+  compile 'com.github.bumptech.glide:glide:3.7.0'
+  compile 'com.squareup.okhttp3:okhttp:3.4.1'
+
+  // media
+  compile 'com.github.Plunderbund:TorrentStream-Android:c45522444e'
+  compile 'com.uwetrottmann.tmdb2:tmdb-java:1.2.0'
+  compile 'com.github.sreichholf:vlc-android-sdk:b6a41d4614'
+
+  compile 'com.trello:rxlifecycle:0.8.0'
+  compile 'com.trello:rxlifecycle-android:0.8.0'
+
+  compile 'com.github.Plunderbund:Provider:c94a35e60e'
+}

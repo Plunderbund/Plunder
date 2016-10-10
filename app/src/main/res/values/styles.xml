@@ -1,0 +1,16 @@
+<resources>
+
+  <style name="AppTheme" parent="Theme.Leanback">
+    <item name="android:colorPrimary">@color/brand.primary</item>
+    <item name="android:colorPrimaryDark">@color/brand.primary_dark</item>
+    <item name="android:colorAccent">@color/brand.accent</item>
+  </style>
+
+  <style name="TextCardStyle">
+    <item name="text_title_background_color">@color/default_header</item>
+    <item name="text_detail_background_color">@color/default_detail</item>
+    <item name="text_title_text_color">@color/white</item>
+    <item name="text_detail_text_color">@color/white</item>
+  </style>
+
+</resources>

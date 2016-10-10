@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <declare-styleable name="TextCardView">
+    <attr name="text_title_background_color" format="reference|color"/>
+    <attr name="text_detail_background_color" format="reference|color"/>
+    <attr name="text_title_text_color" format="reference|color"/>
+    <attr name="text_detail_text_color" format="reference|color"/>
+    <attr name="text_theme" format="reference|integer"/>
+  </declare-styleable>
+</resources>

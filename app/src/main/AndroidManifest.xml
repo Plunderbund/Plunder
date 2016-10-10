@@ -1,0 +1,48 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.plunder.plunder">
+  <uses-feature android:name="android.software.leanback"
+      android:required="false" />
+  <uses-feature android:name="android.hardware.touchscreen"
+      android:required="false"/>
+  <uses-feature android:name="android.hardware.faketouch"
+      android:required="false"/>
+  <uses-feature android:name="android.hardware.telephony"
+      android:required="false"/>
+  <uses-feature android:name="android.hardware.camera"
+      android:required="false"/>
+  <uses-feature android:name="android.hardware.nfc"
+      android:required="false"/>
+  <uses-feature android:name="android.hardware.location.gps"
+      android:required="false"/>
+  <uses-feature android:name="android.hardware.microphone"
+      android:required="false"/>
+  <uses-feature android:name="android.hardware.sensor"
+      android:required="false"/>
+
+  <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+  <application
+      android:name=".App"
+      android:allowBackup="true"
+      android:icon="@mipmap/ic_launcher"
+      android:label="@string/app_name"
+      android:supportsRtl="true"
+      android:theme="@style/AppTheme">
+    <activity
+        android:name=".ui.main.MainActivity"
+        android:label="@string/app_name">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+        <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+      </intent-filter>
+    </activity>
+    <activity android:name=".ui.details.DetailsActivity" />
+    <activity android:name=".ui.search.SearchActivity" />
+    <activity android:name=".ui.sources.SourcesActivity" />
+    <activity android:name=".ui.download.DownloadActivity" />
+    <activity android:name=".ui.playback.PlaybackActivity" />
+    <activity android:name=".ui.genre.GenreActivity" />
+  </application>
+</manifest>
