@@ -27,7 +27,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'me.tatarka:gradle-retrolambda:3.3.0-beta4'
+    classpath 'me.tatarka:gradle-retrolambda:3.3.0'
   }
 }
 
@@ -69,6 +69,9 @@ android {
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_1_8
     targetCompatibility JavaVersion.VERSION_1_8
+  }
+  lintOptions {
+    abortOnError false
   }
 }
 
