@@ -1,0 +1,47 @@
+language: android
+
+sudo: false
+
+jdk: oraclejdk8
+
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+
+before_cache:
+  - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+
+env:
+  global:
+    - GRADLE_OPTS="-Xmx2048m -Xms512m"
+    - APK_FILENAME=Plunder-$TRAVIS_TAG.apk
+
+android:
+  components:
+    - platform-tools
+    - tools
+    - build-tools-24.0.3
+    - android-24
+    - extra-android-m2repository
+
+before_install:
+  - 'openssl aes-256-cbc -K $encrypted_85daeab182f0_key -iv $encrypted_85daeab182f0_iv -in keystore.jks.enc -out keystore.jks -d'
+
+script: ./gradlew build check
+
+before_deploy:
+  - cd app/build/outputs/apk; mv app-release.apk $APK_FILENAME; ls -la; md5sum $APK_FILENAME > md5sum.txt; sha1sum $APK_FILENAME > sha1sum.txt; cd -
+
+deploy:
+  skip_cleanup: true
+  provider: releases
+  api_key:
+    secure: NvXnPx8H2WUBfjIyxJRYVydXj0m2u/WrXscIoG5Ijw3NVb3nyLS/3BHlZvL/NuEztU+3uUnU87qSKx8ONXFbGJ9+mPDSCyc2PV28RKelaY1VsM3mAhxCL34CxCitnqWUngu0QuWeGn630WDIg3lgcxdHGVkYiabm2gsdqscxm+4rQT44UmQfH/Gomto1+DopocJVT7TcjxkIiktV6KA+E6dj5A9+kY3AQP/or1Num98I6tsN9vwSfWFbumcqJvdJAoNmeDkMoSNB8IRrnurfAkvQkttlny6ebXm259HKyNpSsaHgK771HbYGc5MVLU7lN+N3mEOv+8H8EtDQorecqfnn8Ahf/3k+T/OMyR0kuKFlxLUT7WYoa0BT8WtvhICRIcNsPP9iKZ2ri/ATgO3Geq/SwohDZq/HJnhsb5so5Fb3AeXlaAqJ+T4K0gGc5PPthGa0pFubbaN/0rhKfgU95ojEG8txT+2F0oMEJ4ko0uBkkP+mf6lfG0ROwL+WMUrIU2WsvAY9DQg/QPn3Qc1H+YjZc7s0pzDeHCwtCyC00C5A6z0Cxizg9+kGCapGSIXt44d1Y35xNfrm42ykn0qjsen4nOXege3wljlX1rdqC+r9uNrwGLjDyh7vkZiksEepuBCMqGubmpY0EkQUY0kkk3zKX/hKDIIhBN6+HASbjkQ=
+  file:
+    - app/build/outputs/apk/$APK_FILENAME
+    - app/build/outputs/apk/md5sum.txt
+    - app/build/outputs/apk/sha1sum.txt
+  on:
+    repo: Plunderbund/Plunder
+    tags: true
