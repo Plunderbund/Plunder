@@ -28,7 +28,7 @@ android:
 before_install:
   - 'openssl aes-256-cbc -K $encrypted_85daeab182f0_key -iv $encrypted_85daeab182f0_iv -in keystore.jks.enc -out keystore.jks -d'
 
-script: ./gradlew build check
+script: ./gradlew build
 
 before_deploy:
   - cd app/build/outputs/apk; mv app-release.apk $APK_FILENAME; ls -la; md5sum $APK_FILENAME > md5sum.txt; sha1sum $APK_FILENAME > sha1sum.txt; cd -
