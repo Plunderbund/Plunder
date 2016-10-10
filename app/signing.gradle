@@ -1,0 +1,20 @@
+if (System.getenv("PLUNDER_KEY_ALIAS") != null
+    && System.getenv("PLUNDER_KEY_PASSWORD") != null
+    && System.getenv("PLUNDER_KEYSTORE_PASSWORD") != null
+    && file('../keystore.jks').exists()) {
+  android {
+    signingConfigs {
+      releaseSigningConfig {
+        keyAlias System.getenv("PLUNDER_KEY_ALIAS")
+        keyPassword System.getenv("PLUNDER_KEY_PASSWORD")
+        storeFile file('../keystore.jks')
+        storePassword System.getenv("PLUNDER_KEYSTORE_PASSWORD")
+      }
+    }
+    buildTypes {
+      release {
+        signingConfig signingConfigs.releaseSigningConfig
+      }
+    }
+  }
+}

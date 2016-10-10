@@ -2,6 +2,14 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'me.tatarka.retrolambda'
 
+def gitSha = null
+
+try {
+  gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
+} catch (Exception e) {
+  logger.warn("git not available", e)
+}
+
 def versionMajor = 0
 def versionMinor = 1
 def versionPatch = 0
@@ -42,6 +50,9 @@ android {
 
     buildConfigField "String", "TMDB_API_KEY", "\"a4b2e4479449209934eb7a2653054c44\""
     buildConfigField "String", "DOWNLOAD_DIRECTORY", "\"downloads/\""
+
+    buildConfigField 'String', 'BUILD_NUMBER', (getBuildNumber() == null ? 'null' : "\"${buildNumber}\"")
+    buildConfigField 'String', 'GIT_SHA', (gitSha == null ? 'null' : "\"${gitSha}\"")
   }
   buildTypes {
     debug {
@@ -116,4 +127,15 @@ dependencies {
   compile 'com.trello:rxlifecycle-android:0.8.0'
 
   compile 'com.github.Plunderbund:Provider:c94a35e60e'
+}
+
+apply from: "signing.gradle"
+
+String getBuildNumber() {
+  String travisBuildNumber = System.getenv("TRAVIS_BUILD_NUMBER")
+  if(travisBuildNumber != null) {
+    return "T-$travisBuildNumber"
+  }
+
+  return null;
 }
