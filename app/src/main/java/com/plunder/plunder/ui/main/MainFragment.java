@@ -1,6 +1,9 @@
 package com.plunder.plunder.ui.main;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,6 +25,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.google.common.base.Preconditions;
 import com.plunder.plunder.App;
 import com.plunder.plunder.AppComponent;
+import com.plunder.plunder.R;
 import com.plunder.plunder.ui.common.BaseBrowseFragment;
 import com.plunder.plunder.ui.presenters.GenreCardPresenter;
 import com.plunder.plunder.ui.presenters.MovieCardPresenter;
@@ -30,7 +34,9 @@ import com.plunder.plunder.ui.viewmodels.GenreViewModel;
 import com.plunder.plunder.ui.viewmodels.MovieViewModel;
 import com.plunder.plunder.ui.viewmodels.TvShowViewModel;
 import com.squareup.leakcanary.RefWatcher;
+import java.io.File;
 import java.util.Collection;
+import java.util.Locale;
 import javax.inject.Inject;
 
 public class MainFragment extends BaseBrowseFragment implements MainView {
@@ -40,6 +46,9 @@ public class MainFragment extends BaseBrowseFragment implements MainView {
   private BackgroundManager backgroundManager;
   private DisplayMetrics displayMetrics;
   private ArrayObjectAdapter rowsAdapter;
+
+  private AlertDialog dialog;
+  private ProgressDialog progressDialog;
 
   @Override protected void onAttach() {
     AppComponent appComponent = App.getAppComponent(getActivity());
@@ -99,32 +108,35 @@ public class MainFragment extends BaseBrowseFragment implements MainView {
     super.onDestroy();
   }
 
-  @Override public void addMoviesRow(String title, @NonNull Collection<MovieViewModel> movies) {
+  @Override public void addMovies(@NonNull Collection<MovieViewModel> movies) {
     Preconditions.checkNotNull(movies);
 
     ArrayObjectAdapter rowAdapter = new ArrayObjectAdapter(new MovieCardPresenter());
     Stream.of(movies).forEach(rowAdapter::add);
 
+    String title = getString(R.string.main_header_popular_movies);
     HeaderItem header = new HeaderItem(title);
     rowsAdapter.add(new ListRow(header, rowAdapter));
   }
 
-  @Override public void addTvShowsRow(String title, @NonNull Collection<TvShowViewModel> tvShows) {
+  @Override public void addTvShows(@NonNull Collection<TvShowViewModel> tvShows) {
     Preconditions.checkNotNull(tvShows);
 
     ArrayObjectAdapter rowAdapter = new ArrayObjectAdapter(new TvShowCardPresenter());
     Stream.of(tvShows).forEach(rowAdapter::add);
 
+    String title = getString(R.string.main_header_popular_tv_shows);
     HeaderItem header = new HeaderItem(title);
     rowsAdapter.add(new ListRow(header, rowAdapter));
   }
 
-  @Override public void addGenresRow(String title, @NonNull Collection<GenreViewModel> genres) {
+  @Override public void addGenres(@NonNull Collection<GenreViewModel> genres) {
     Preconditions.checkNotNull(genres);
 
     ArrayObjectAdapter rowAdapter = new ArrayObjectAdapter(new GenreCardPresenter());
     Stream.of(genres).forEach(rowAdapter::add);
 
+    String title = getString(R.string.main_header_genres);
     HeaderItem header = new HeaderItem(title);
     rowsAdapter.add(new ListRow(header, rowAdapter));
   }
@@ -153,6 +165,38 @@ public class MainFragment extends BaseBrowseFragment implements MainView {
             }
           }
         });
+  }
+
+  @Override public void provideUpdate(String name) {
+    dialog = new AlertDialog.Builder(getActivity())
+        .setTitle("Update available")
+        .setMessage(String.format(Locale.getDefault(), "Update Plunder to %s?", name))
+        .setPositiveButton("Yes", (where, which) -> presenter.performUpdate())
+        .setNegativeButton("Later", null)
+        .setCancelable(true)
+        .create();
+    dialog.show();
+  }
+
+  @Override public void updateStarted() {
+    progressDialog = new ProgressDialog(getActivity());
+    progressDialog.setMessage("Updating...");
+    progressDialog.setIndeterminate(true);
+    progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+    progressDialog.setCancelable(false);
+    progressDialog.show();
+  }
+
+  @Override public void updateComplete(String filePath) {
+    if (progressDialog != null && progressDialog.isShowing()) {
+      progressDialog.hide();
+    }
+
+    Intent intent = new Intent(Intent.ACTION_VIEW);
+    intent.setDataAndType(Uri.fromFile(new File(filePath)),
+        "application/vnd.android.package-archive");
+    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    startActivity(intent);
   }
 
   private void onItemSelected(Presenter.ViewHolder itemViewHolder, Object item,

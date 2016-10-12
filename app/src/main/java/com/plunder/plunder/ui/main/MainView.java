@@ -10,11 +10,17 @@ import com.plunder.plunder.ui.viewmodels.TvShowViewModel;
 import java.util.Collection;
 
 public interface MainView extends FragmentView {
-  void addMoviesRow(String title, @NonNull Collection<MovieViewModel> movies);
+  void addMovies(@NonNull Collection<MovieViewModel> movies);
 
-  void addTvShowsRow(String title, @NonNull Collection<TvShowViewModel> tvShows);
+  void addTvShows(@NonNull Collection<TvShowViewModel> tvShows);
 
-  void addGenresRow(String title, @NonNull Collection<GenreViewModel> genres);
+  void addGenres(@NonNull Collection<GenreViewModel> genres);
 
   void setBackgroundUri(@Nullable Uri uri);
+
+  void provideUpdate(String name);
+
+  void updateStarted();
+
+  void updateComplete(String filePath);
 }

@@ -1,4 +1,19 @@
 package com.plunder.plunder.update;
 
-public class BaseUpdateManager implements UpdateManager {
+import com.github.zafarkhaja.semver.Version;
+import com.plunder.plunder.BuildConfig;
+
+public abstract class BaseUpdateManager implements UpdateManager {
+  protected boolean isEnabled() {
+    return true;
+    /*if (BuildConfig.DEBUG) {
+      return false;
+    }
+
+    return true;*/
+  }
+
+  protected Version getCurrentVersion() {
+    return Version.valueOf(BuildConfig.VERSION_NAME);
+  }
 }

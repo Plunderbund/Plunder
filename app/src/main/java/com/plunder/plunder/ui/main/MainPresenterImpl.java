@@ -18,22 +18,28 @@ import com.plunder.plunder.ui.events.ShowTvShowDetails;
 import com.plunder.plunder.ui.viewmodels.GenreViewModel;
 import com.plunder.plunder.ui.viewmodels.MovieViewModel;
 import com.plunder.plunder.ui.viewmodels.TvShowViewModel;
+import com.plunder.plunder.update.Update;
+import com.plunder.plunder.update.UpdateManager;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import org.greenrobot.eventbus.EventBus;
+import timber.log.Timber;
 
 public class MainPresenterImpl extends BaseFragmentPresenter<MainView> implements MainPresenter {
   private static final int BACKGROUND_UPDATE_DELAY = 300;
 
   private final CatalogManager catalogManager;
+  private final UpdateManager updateManager;
+
   private Uri backgroundUri;
   private Timer backgroundTimer;
 
   public MainPresenterImpl(@NonNull MainView view, EventBus eventBus,
-      CatalogManager catalogManager) {
+      CatalogManager catalogManager, UpdateManager updateManager) {
     super(view, eventBus);
     this.catalogManager = catalogManager;
+    this.updateManager = updateManager;
   }
 
   @Override public void onCreated(Context context) {
@@ -52,22 +58,33 @@ public class MainPresenterImpl extends BaseFragmentPresenter<MainView> implement
 
           if (view != null) {
             if (movies != null) {
-              String title = context.getString(R.string.main_header_popular_movies);
               List<MovieViewModel> viewModels = MovieViewModel.fromList(movies);
-              view.addMoviesRow(title, viewModels);
+              view.addMovies(viewModels);
             }
 
             if (tvShows != null) {
-              String title = context.getString(R.string.main_header_popular_tv_shows);
               List<TvShowViewModel> viewModels = TvShowViewModel.fromList(tvShows);
-              view.addTvShowsRow(title, viewModels);
+              view.addTvShows(viewModels);
             }
 
             if (genres != null) {
-              String title = context.getString(R.string.main_header_genres);
               List<GenreViewModel> viewModels = GenreViewModel.fromList(genres);
-              view.addGenresRow(title, viewModels);
+              view.addGenres(viewModels);
             }
+          }
+        });
+  }
+
+  @Override public void onStart() {
+    super.onStart();
+
+    updateManager.fetchUpdate()
+        .compose(getLifecycleTransformer())
+        .subscribe(update -> {
+          MainView view = getView();
+
+          if (view != null) {
+            view.provideUpdate(update.name());
           }
         });
   }
@@ -155,6 +172,22 @@ public class MainPresenterImpl extends BaseFragmentPresenter<MainView> implement
 
   @Override public Uri getBackgroundUri() {
     return backgroundUri;
+  }
+
+  @Override public void performUpdate() {
+    MainView view = getView();
+
+    if (view != null) {
+      view.updateStarted();
+    }
+
+    updateManager.downloadUpdate()
+        .compose(getLifecycleTransformer())
+        .subscribe(filePath -> {
+          if (view != null) {
+            view.updateComplete(filePath);
+          }
+        });
   }
 
   private class UpdateBackgroundTask extends TimerTask {

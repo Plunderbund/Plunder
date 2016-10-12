@@ -21,4 +21,6 @@ public interface MainPresenter extends FragmentPresenter {
   void search();
 
   Uri getBackgroundUri();
+
+  void performUpdate();
 }
