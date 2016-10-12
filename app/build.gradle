@@ -49,7 +49,7 @@ android {
     versionName "${versionMajor}.${versionMinor}.${versionPatch}"
 
     buildConfigField "String", "TMDB_API_KEY", "\"a4b2e4479449209934eb7a2653054c44\""
-    buildConfigField "String", "DOWNLOAD_DIRECTORY", "\"downloads/\""
+    buildConfigField "String", "GITHUB_NAME", "\"Plunderbund/Plunder\""
 
     buildConfigField 'String', 'BUILD_NUMBER', (getBuildNumber() == null ? 'null' : "\"${buildNumber}\"")
     buildConfigField 'String', 'GIT_SHA', (gitSha == null ? 'null' : "\"${gitSha}\"")
@@ -58,10 +58,10 @@ android {
     debug {
       applicationIdSuffix ".debug"
       versionNameSuffix "-debug"
-      resValue "string", "app_name", "Plunderbund (debug)"
+      resValue "string", "app_name", "Plunder (debug)"
     }
     release {
-      resValue "string", "app_name", "Plunderbund"
+      resValue "string", "app_name", "Plunder"
       minifyEnabled false
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
     }
@@ -72,6 +72,13 @@ android {
   }
   lintOptions {
     abortOnError false
+  }
+  packagingOptions {
+    exclude 'META-INF/DEPENDENCIES'
+    exclude 'META-INF/NOTICE'
+    exclude 'META-INF/LICENSE'
+    exclude 'META-INF/LICENSE.txt'
+    exclude 'META-INF/NOTICE.txt'
   }
 }
 
@@ -130,6 +137,8 @@ dependencies {
   compile 'com.trello:rxlifecycle-android:0.8.0'
 
   compile 'com.github.Plunderbund:Provider:c94a35e60e'
+  compile group: 'org.kohsuke', name: 'github-api', version: '1.77'
+  compile group: 'com.github.zafarkhaja', name: 'java-semver', version: '0.9.0'
 }
 
 apply from: "signing.gradle"

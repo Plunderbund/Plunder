@@ -8,8 +8,8 @@ import com.plunder.plunder.domain.models.Movie;
 import com.plunder.plunder.domain.models.TvEpisode;
 import com.plunder.plunder.domain.models.TvSeason;
 import com.plunder.plunder.domain.models.TvShow;
-import com.plunder.plunder.downloads.DownloadClient;
-import com.plunder.plunder.downloads.DownloadManager;
+import com.plunder.plunder.torrents.TorrentClient;
+import com.plunder.plunder.torrents.TorrentManager;
 import com.plunder.plunder.ui.common.BaseFragmentPresenter;
 import com.plunder.plunder.ui.viewmodels.MovieViewModel;
 import com.plunder.plunder.ui.viewmodels.TvEpisodeViewModel;
@@ -18,8 +18,8 @@ import org.greenrobot.eventbus.EventBus;
 
 public class PlaybackPresenterImpl extends BaseFragmentPresenter<PlaybackView>
     implements PlaybackPresenter {
-  private final DownloadManager downloadManager;
-  private DownloadClient downloadClient;
+  private final TorrentManager torrentManager;
+  private TorrentClient torrentClient;
   private UUID downloadId;
   private Movie movie;
   private TvShow tvShow;
@@ -27,9 +27,9 @@ public class PlaybackPresenterImpl extends BaseFragmentPresenter<PlaybackView>
   private TvEpisode tvEpisode;
 
   public PlaybackPresenterImpl(@NonNull PlaybackView view, EventBus eventBus,
-      DownloadManager downloadManager) {
+      TorrentManager torrentManager) {
     super(view, eventBus);
-    this.downloadManager = downloadManager;
+    this.torrentManager = torrentManager;
   }
 
   @Nullable @Override public UUID getDownloadId() {
@@ -99,10 +99,10 @@ public class PlaybackPresenterImpl extends BaseFragmentPresenter<PlaybackView>
     }
 
     if (downloadId != null) {
-      downloadClient = downloadManager.getClientById(downloadId);
+      torrentClient = torrentManager.getClientById(downloadId);
 
-      if (downloadClient != null) {
-        view.setVideoFile(downloadClient.getFile());
+      if (torrentClient != null) {
+        view.setVideoFile(torrentClient.getFile());
       }
     }
   }
@@ -110,9 +110,9 @@ public class PlaybackPresenterImpl extends BaseFragmentPresenter<PlaybackView>
   @Override public void onStop() {
     super.onStop();
 
-    if (downloadClient != null) {
-      downloadClient.stop();
-      downloadClient = null;
+    if (torrentClient != null) {
+      torrentClient.stop();
+      torrentClient = null;
     }
   }
 }

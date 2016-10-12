@@ -8,8 +8,8 @@ import com.plunder.plunder.domain.models.Movie;
 import com.plunder.plunder.domain.models.TvEpisode;
 import com.plunder.plunder.domain.models.TvSeason;
 import com.plunder.plunder.domain.models.TvShow;
-import com.plunder.plunder.downloads.DownloadClient;
-import com.plunder.plunder.downloads.DownloadManager;
+import com.plunder.plunder.torrents.TorrentClient;
+import com.plunder.plunder.torrents.TorrentManager;
 import com.plunder.plunder.ui.common.BaseFragmentPresenter;
 import com.plunder.plunder.ui.events.PlayMovieSource;
 import com.plunder.plunder.ui.events.PlayTvShowSource;
@@ -19,9 +19,9 @@ import com.plunder.provider.search.SearchResult;
 import org.greenrobot.eventbus.EventBus;
 
 public class DownloadPresenterImpl extends BaseFragmentPresenter<DownloadView>
-    implements DownloadPresenter, DownloadClient.Listener {
-  private final DownloadManager downloadManager;
-  private DownloadClient downloadClient;
+    implements DownloadPresenter, TorrentClient.Listener {
+  private final TorrentManager torrentManager;
+  private TorrentClient torrentClient;
   private boolean downloadReady;
   private Movie movie;
   private TvShow tvShow;
@@ -30,9 +30,9 @@ public class DownloadPresenterImpl extends BaseFragmentPresenter<DownloadView>
   private SearchResult searchResult;
 
   public DownloadPresenterImpl(@NonNull DownloadView view, EventBus eventBus,
-      DownloadManager downloadManager) {
+      TorrentManager torrentManager) {
     super(view, eventBus);
-    this.downloadManager = downloadManager;
+    this.torrentManager = torrentManager;
   }
 
   @Nullable public Movie getMovie() {
@@ -102,39 +102,39 @@ public class DownloadPresenterImpl extends BaseFragmentPresenter<DownloadView>
     }
 
     if (searchResult != null) {
-      downloadClient = downloadManager.create(searchResult.uri());
-      downloadClient.addListener(this);
-      downloadClient.start();
+      torrentClient = torrentManager.create(searchResult.uri());
+      torrentClient.addListener(this);
+      torrentClient.start();
     }
   }
 
   @Override public void onStop() {
     super.onStop();
 
-    if (downloadClient != null) {
-      downloadClient.removeListener(this);
+    if (torrentClient != null) {
+      torrentClient.removeListener(this);
 
       if (!downloadReady) {
-        downloadClient.stop();
+        torrentClient.stop();
       }
 
-      downloadClient = null;
+      torrentClient = null;
     }
   }
 
-  @Override public void onPrepared(DownloadClient client) {
+  @Override public void onPrepared(TorrentClient client) {
 
   }
 
-  @Override public void onStarted(DownloadClient client) {
+  @Override public void onStarted(TorrentClient client) {
 
   }
 
-  @Override public void onError(DownloadClient client) {
+  @Override public void onError(TorrentClient client) {
 
   }
 
-  @Override public void onReady(DownloadClient client) {
+  @Override public void onReady(TorrentClient client) {
     downloadReady = true;
 
     if (movie != null) {
@@ -144,7 +144,7 @@ public class DownloadPresenterImpl extends BaseFragmentPresenter<DownloadView>
     }
   }
 
-  @Override public void onProgress(DownloadClient client) {
+  @Override public void onProgress(TorrentClient client) {
     DownloadView view = getView();
 
     if (view != null) {
@@ -152,7 +152,7 @@ public class DownloadPresenterImpl extends BaseFragmentPresenter<DownloadView>
     }
   }
 
-  @Override public void onStopped(DownloadClient client) {
+  @Override public void onStopped(TorrentClient client) {
 
   }
 }

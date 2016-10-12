@@ -1,7 +1,7 @@
 package com.plunder.plunder.ui.download;
 
 import android.support.annotation.NonNull;
-import com.plunder.plunder.downloads.DownloadManager;
+import com.plunder.plunder.torrents.TorrentManager;
 import dagger.Module;
 import dagger.Provides;
 import java.lang.ref.WeakReference;
@@ -19,7 +19,7 @@ import org.greenrobot.eventbus.EventBus;
   }
 
   @Provides public DownloadPresenter providePresenter(DownloadView view, EventBus eventBus,
-      DownloadManager downloadManager) {
-    return new DownloadPresenterImpl(view, eventBus, downloadManager);
+      TorrentManager torrentManager) {
+    return new DownloadPresenterImpl(view, eventBus, torrentManager);
   }
 }
