@@ -1,4 +1,4 @@
-package com.plunder.plunder.downloads;
+package com.plunder.plunder.torrents;
 
 import android.app.Application;
 import com.github.se_bastiaan.torrentstream.TorrentOptions;
@@ -12,7 +12,7 @@ import java.io.File;
 import javax.inject.Named;
 import javax.inject.Provider;
 
-@Module public class DownloadModule {
+@Module public class TorrentModule {
   @Provides @AppScope @Named("TorrentDirectory") String provideTorrentDirectory(
       Application application) {
     return new File(application.getCacheDir(), "downloads").getAbsolutePath();
@@ -39,13 +39,13 @@ import javax.inject.Provider;
     }
   }
 
-  @Provides DownloadClient provideDownloadClient(TorrentStream torrentStream) {
+  @Provides TorrentClient provideDownloadClient(TorrentStream torrentStream) {
     return new TorrentStreamClient(torrentStream);
   }
 
-  @Provides @AppScope DownloadManager provideDownloadManager(
-      @Named("TorrentDirectory") String torrentDirectory, Provider<DownloadClient> clientProvider,
+  @Provides @AppScope TorrentManager provideDownloadManager(
+      @Named("TorrentDirectory") String torrentDirectory, Provider<TorrentClient> clientProvider,
       ThreadExecutor threadExecutor) {
-    return new DownloadManager(torrentDirectory, clientProvider, threadExecutor);
+    return new TorrentManager(torrentDirectory, clientProvider, threadExecutor);
   }
 }

@@ -1,4 +1,4 @@
-package com.plunder.plunder.downloads;
+package com.plunder.plunder.torrents;
 
 import android.support.annotation.Nullable;
 import com.github.se_bastiaan.torrentstream.StreamStatus;
@@ -7,7 +7,7 @@ import com.github.se_bastiaan.torrentstream.TorrentStream;
 import com.github.se_bastiaan.torrentstream.listeners.TorrentListener;
 import java.io.File;
 
-public class TorrentStreamClient extends DownloadClient implements TorrentListener {
+public class TorrentStreamClient extends TorrentClient implements TorrentListener {
   private final TorrentStream torrentStream;
   private Torrent torrent;
   private StreamStatus streamStatus;

@@ -1,4 +1,4 @@
-package com.plunder.plunder.downloads;
+package com.plunder.plunder.torrents;
 
 import android.support.annotation.Nullable;
 import com.plunder.plunder.executors.ThreadExecutor;
@@ -11,13 +11,13 @@ import javax.inject.Provider;
 import org.apache.commons.io.FileUtils;
 import timber.log.Timber;
 
-public class DownloadManager {
+public class TorrentManager {
   private final String torrentDirectory;
-  private final Provider<DownloadClient> clientProvider;
-  private final Map<UUID, DownloadClient> clients;
+  private final Provider<TorrentClient> clientProvider;
+  private final Map<UUID, TorrentClient> clients;
   private final ThreadExecutor threadExecutor;
 
-  public DownloadManager(String torrentDirectory, Provider<DownloadClient> clientProvider,
+  public TorrentManager(String torrentDirectory, Provider<TorrentClient> clientProvider,
       ThreadExecutor threadExecutor) {
     this.torrentDirectory = torrentDirectory;
     this.clientProvider = clientProvider;
@@ -40,14 +40,14 @@ public class DownloadManager {
     }
   }
 
-  public DownloadClient create(String url) {
+  public TorrentClient create(String url) {
     UUID id;
 
     do {
       id = createId();
     } while (clients.containsKey(id));
 
-    DownloadClient client = clientProvider.get();
+    TorrentClient client = clientProvider.get();
     client.setId(id);
     client.setUrl(url);
     clients.put(id, client);
@@ -55,7 +55,7 @@ public class DownloadManager {
     return client;
   }
 
-  public @Nullable DownloadClient getClientById(UUID id) {
+  public @Nullable TorrentClient getClientById(UUID id) {
     if (clients.containsKey(id)) {
       return clients.get(id);
     }

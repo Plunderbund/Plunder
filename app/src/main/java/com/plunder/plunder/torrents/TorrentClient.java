@@ -1,4 +1,4 @@
-package com.plunder.plunder.downloads;
+package com.plunder.plunder.torrents;
 
 import android.support.annotation.Nullable;
 import com.annimon.stream.Collectors;
@@ -9,12 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public abstract class DownloadClient {
+public abstract class TorrentClient {
   private List<WeakReference<Listener>> listeners;
   private UUID id;
   private String url;
 
-  public DownloadClient() {
+  public TorrentClient() {
     listeners = new ArrayList<>();
   }
 
@@ -103,16 +103,16 @@ public abstract class DownloadClient {
   }
 
   public interface Listener {
-    void onPrepared(DownloadClient client);
+    void onPrepared(TorrentClient client);
 
-    void onStarted(DownloadClient client);
+    void onStarted(TorrentClient client);
 
-    void onError(DownloadClient client);
+    void onError(TorrentClient client);
 
-    void onReady(DownloadClient client);
+    void onReady(TorrentClient client);
 
-    void onProgress(DownloadClient client);
+    void onProgress(TorrentClient client);
 
-    void onStopped(DownloadClient client);
+    void onStopped(TorrentClient client);
   }
 }
