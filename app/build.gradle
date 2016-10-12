@@ -129,7 +129,7 @@ dependencies {
   compile 'com.squareup.okhttp3:okhttp:3.4.1'
 
   // media
-  compile 'com.github.Plunderbund:TorrentStream-Android:c45522444e'
+  compile 'com.github.Plunderbund:TorrentStream-Android:5ef6efa4e9'
   compile 'com.uwetrottmann.tmdb2:tmdb-java:1.2.0'
   compile 'com.github.Plunderbund:vlc-android-sdk:4026b4c56d'
 
@@ -145,6 +145,7 @@ apply from: "signing.gradle"
 
 String getBuildNumber() {
   String travisBuildNumber = System.getenv("TRAVIS_BUILD_NUMBER")
+
   if(travisBuildNumber != null) {
     return "T-$travisBuildNumber"
   }
