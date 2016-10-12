@@ -318,10 +318,6 @@ public class PlaybackFragment extends BasePlaybackOverlayFragment
     playPause(true);
   }
 
-  @Override public void onHardwareAccelerationError(IVLCVout vlcVout) {
-
-  }
-
   private void createMediaSession() {
     if (mediaSession == null) {
       mediaSession = new MediaSession(getActivity(), "Shun");
