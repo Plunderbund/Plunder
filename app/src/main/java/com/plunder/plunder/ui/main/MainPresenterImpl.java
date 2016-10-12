@@ -187,6 +187,12 @@ public class MainPresenterImpl extends BaseFragmentPresenter<MainView> implement
           if (view != null) {
             view.updateComplete(filePath);
           }
+        }, err -> {
+          Timber.e(err, "Failed to update");
+
+          if (view != null) {
+            view.updateFailed();
+          }
         });
   }
 

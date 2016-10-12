@@ -23,4 +23,6 @@ public interface MainView extends FragmentView {
   void updateStarted();
 
   void updateComplete(String filePath);
+
+  void updateFailed();
 }

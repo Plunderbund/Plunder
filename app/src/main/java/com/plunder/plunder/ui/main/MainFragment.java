@@ -1,5 +1,6 @@
 package com.plunder.plunder.ui.main;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -34,6 +35,7 @@ import com.plunder.plunder.ui.viewmodels.GenreViewModel;
 import com.plunder.plunder.ui.viewmodels.MovieViewModel;
 import com.plunder.plunder.ui.viewmodels.TvShowViewModel;
 import com.squareup.leakcanary.RefWatcher;
+import com.tbruyelle.rxpermissions.RxPermissions;
 import java.io.File;
 import java.util.Collection;
 import java.util.Locale;
@@ -168,19 +170,38 @@ public class MainFragment extends BaseBrowseFragment implements MainView {
   }
 
   @Override public void provideUpdate(String name) {
-    dialog = new AlertDialog.Builder(getActivity())
-        .setTitle("Update available")
-        .setMessage(String.format(Locale.getDefault(), "Update Plunder to %s?", name))
-        .setPositiveButton("Yes", (where, which) -> presenter.performUpdate())
-        .setNegativeButton("Later", null)
-        .setCancelable(true)
-        .create();
-    dialog.show();
+    if (dialog != null && dialog.isShowing()) {
+      dialog.hide();
+    }
+
+    if (progressDialog == null || !progressDialog.isShowing()) {
+      dialog = new AlertDialog.Builder(getActivity())
+          .setTitle("Update available")
+          .setMessage(String.format(Locale.getDefault(), "Update Plunder to %s?", name))
+          .setPositiveButton("Yes", (where, which) -> {
+            RxPermissions.getInstance(getActivity())
+                .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .subscribe(granted -> {
+                  if (granted) {
+                    presenter.performUpdate();
+                  } else {
+                    new AlertDialog.Builder(getActivity())
+                        .setTitle("Error")
+                        .setMessage("You must accept the permission before updating")
+                        .show();
+                  }
+                });
+          })
+          .setNegativeButton("Later", null)
+          .setCancelable(true)
+          .create();
+      dialog.show();
+    }
   }
 
   @Override public void updateStarted() {
     progressDialog = new ProgressDialog(getActivity());
-    progressDialog.setMessage("Updating...");
+    progressDialog.setMessage("Updating, this could take a few minutes...");
     progressDialog.setIndeterminate(true);
     progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
     progressDialog.setCancelable(false);
@@ -197,6 +218,17 @@ public class MainFragment extends BaseBrowseFragment implements MainView {
         "application/vnd.android.package-archive");
     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     startActivity(intent);
+  }
+
+  @Override public void updateFailed() {
+    if (progressDialog != null && progressDialog.isShowing()) {
+      progressDialog.hide();
+    }
+
+    new AlertDialog.Builder(getActivity())
+        .setTitle("Error")
+        .setMessage("There was an error while updating")
+        .show();
   }
 
   private void onItemSelected(Presenter.ViewHolder itemViewHolder, Object item,

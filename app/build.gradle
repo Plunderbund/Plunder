@@ -12,7 +12,7 @@ try {
 
 def versionMajor = 0
 def versionMinor = 1
-def versionPatch = 2
+def versionPatch = 3
 
 repositories {
   mavenCentral()
@@ -139,6 +139,7 @@ dependencies {
   compile 'com.github.Plunderbund:Provider:c94a35e60e'
   compile group: 'org.kohsuke', name: 'github-api', version: '1.77'
   compile group: 'com.github.zafarkhaja', name: 'java-semver', version: '0.9.0'
+  compile 'com.tbruyelle.rxpermissions:rxpermissions:0.7.1@aar'
 }
 
 apply from: "signing.gradle"
