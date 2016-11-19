@@ -12,7 +12,7 @@ try {
 
 def versionMajor = 0
 def versionMinor = 1
-def versionPatch = 3
+def versionPatch = 4
 
 repositories {
   mavenCentral()
@@ -129,9 +129,9 @@ dependencies {
   compile 'com.squareup.okhttp3:okhttp:3.4.1'
 
   // media
-  compile 'com.github.Plunderbund:TorrentStream-Android:17c410fdee'
+  compile 'com.github.Plunderbund:TorrentStream-Android:e923aab805'
   compile 'com.uwetrottmann.tmdb2:tmdb-java:1.2.0'
-  compile 'com.github.Plunderbund:vlc-android-sdk:4026b4c56d'
+  compile 'com.github.sreichholf:vlc-android-sdk:9557fcd7fd'
 
   compile 'com.trello:rxlifecycle:0.8.0'
   compile 'com.trello:rxlifecycle-android:0.8.0'
