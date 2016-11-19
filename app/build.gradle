@@ -131,7 +131,7 @@ dependencies {
   // media
   compile 'com.github.Plunderbund:TorrentStream-Android:e923aab805'
   compile 'com.uwetrottmann.tmdb2:tmdb-java:1.2.0'
-  compile 'com.github.sreichholf:vlc-android-sdk:9557fcd7fd'
+  compile 'com.github.sreichholf:vlc-android-sdk:b6a41d4614'
 
   compile 'com.trello:rxlifecycle:0.8.0'
   compile 'com.trello:rxlifecycle-android:0.8.0'
