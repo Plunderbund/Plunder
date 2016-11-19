@@ -179,7 +179,7 @@ public class MainFragment extends BaseBrowseFragment implements MainView {
           .setTitle("Update available")
           .setMessage(String.format(Locale.getDefault(), "Update Plunder to %s?", name))
           .setPositiveButton("Yes", (where, which) -> {
-            RxPermissions.getInstance(getActivity())
+            new RxPermissions(getActivity())
                 .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .subscribe(granted -> {
                   if (granted) {

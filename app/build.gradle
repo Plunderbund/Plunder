@@ -27,7 +27,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'me.tatarka:gradle-retrolambda:3.3.0'
+    classpath 'me.tatarka:gradle-retrolambda:3.3.1'
   }
 }
 
@@ -36,13 +36,13 @@ retrolambda {
 }
 
 android {
-  compileSdkVersion 24
-  buildToolsVersion "24.0.3"
+  compileSdkVersion 25
+  buildToolsVersion "25.0.0"
 
   defaultConfig {
     applicationId "com.plunder.plunder"
     minSdkVersion 21
-    targetSdkVersion 24
+    targetSdkVersion 25
     multiDexEnabled true
 
     versionCode versionMajor * 10000 + versionMinor * 100 + versionPatch
@@ -86,34 +86,34 @@ dependencies {
   compile fileTree(include: ['*.jar'], dir: 'libs')
 
   // support libraries
-  compile 'com.android.support:support-v4:24.2.1'
-  compile 'com.android.support:appcompat-v7:24.2.1'
-  compile 'com.android.support:leanback-v17:24.2.1'
-  compile 'com.android.support:support-annotations:24.2.1'
-  compile 'com.android.support:recommendation:24.2.1'
-  compile 'com.android.support:design:24.2.1'
-  compile 'com.android.support:preference-leanback-v17:24.2.1'
-  compile 'com.android.support:recyclerview-v7:24.2.1'
-  compile 'com.android.support:cardview-v7:24.2.1'
+  compile 'com.android.support:support-v4:25.0.1'
+  compile 'com.android.support:appcompat-v7:25.0.1'
+  compile 'com.android.support:leanback-v17:25.0.1'
+  compile 'com.android.support:support-annotations:25.0.1'
+  compile 'com.android.support:recommendation:25.0.1'
+  compile 'com.android.support:design:25.0.1'
+  compile 'com.android.support:preference-leanback-v17:25.0.1'
+  compile 'com.android.support:recyclerview-v7:25.0.1'
+  compile 'com.android.support:cardview-v7:25.0.1'
   compile 'com.android.support:multidex:1.0.1'
 
   // debugging
-  debugCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
-  releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
-  testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
+  debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
+  releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+  testCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
   compile 'com.jakewharton.timber:timber:4.3.1'
-  debugCompile 'com.nshmura:strictmode-notifier:0.9.1'
-  releaseCompile 'com.nshmura:strictmode-notifier-no-op:0.9.1'
+  debugCompile 'com.nshmura:strictmode-notifier:0.9.3'
+  releaseCompile 'com.nshmura:strictmode-notifier-no-op:0.9.3'
 
   // core
   apt 'com.google.dagger:dagger-compiler:2.7'
   compile 'com.google.dagger:dagger:2.7'
   provided 'org.glassfish:javax.annotation:10.0-b28'
-  compile 'com.annimon:stream:1.1.2'
+  compile 'com.annimon:stream:1.1.3'
   compile 'org.greenrobot:eventbus:3.0.0'
   provided 'com.google.auto.value:auto-value:1.2'
   apt 'frankiesardo:auto-parcel:1.0.3'
-  compile 'com.google.guava:guava:19.0'
+  compile 'com.google.guava:guava:20.0'
   compile 'commons-io:commons-io:2.5'
   compile 'com.jakewharton:butterknife:8.4.0'
   apt 'com.jakewharton:butterknife-compiler:8.4.0'
@@ -121,25 +121,25 @@ dependencies {
 
   // rxjava
   compile 'io.reactivex:rxandroid:1.2.1'
-  compile 'io.reactivex:rxjava:1.2.0'
+  compile 'io.reactivex:rxjava:1.2.2'
   retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:+'
 
   // networking
   compile 'com.github.bumptech.glide:glide:3.7.0'
-  compile 'com.squareup.okhttp3:okhttp:3.4.1'
+  compile 'com.squareup.okhttp3:okhttp:3.4.2'
 
   // media
   compile 'com.github.Plunderbund:TorrentStream-Android:e923aab805'
-  compile 'com.uwetrottmann.tmdb2:tmdb-java:1.2.0'
+  compile 'com.uwetrottmann.tmdb2:tmdb-java:1.3.0'
   compile 'com.github.sreichholf:vlc-android-sdk:b6a41d4614'
 
-  compile 'com.trello:rxlifecycle:0.8.0'
-  compile 'com.trello:rxlifecycle-android:0.8.0'
+  compile 'com.trello:rxlifecycle:1.0'
+  compile 'com.trello:rxlifecycle-android:1.0'
 
   compile 'com.github.Plunderbund:Provider:c94a35e60e'
-  compile group: 'org.kohsuke', name: 'github-api', version: '1.77'
+  compile group: 'org.kohsuke', name: 'github-api', version: '1.79'
   compile group: 'com.github.zafarkhaja', name: 'java-semver', version: '0.9.0'
-  compile 'com.tbruyelle.rxpermissions:rxpermissions:0.7.1@aar'
+  compile 'com.tbruyelle.rxpermissions:rxpermissions:0.9.0@aar'
 }
 
 apply from: "signing.gradle"

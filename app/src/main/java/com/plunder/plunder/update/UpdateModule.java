@@ -10,8 +10,7 @@ import javax.inject.Named;
 import okhttp3.OkHttpClient;
 
 @Module public class UpdateModule {
-  @Provides @AppScope @Named("UpdateDirectory") String provideUpdateDirectory(
-      Application application) {
+  @Provides @AppScope @Named("UpdateDirectory") String provideUpdateDirectory() {
     return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
         .getAbsolutePath();
   }

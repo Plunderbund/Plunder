@@ -122,18 +122,26 @@ public class GitHubUpdateManager extends BaseUpdateManager {
             File directory = file.getParentFile();
 
             if (directory.exists() && directory.isFile()) {
-              directory.delete();
+              if (!directory.delete()) {
+                return Observable.error(new Exception("Unable to remove previous directory"));
+              }
             }
 
             if (!directory.exists()) {
-              directory.mkdirs();
+              if (!directory.mkdirs()) {
+                return Observable.error(new Exception("Unable to create directory"));
+              }
             }
 
             if (file.exists()) {
-              file.delete();
+              if (!file.delete()) {
+                return Observable.error(new Exception("Unable to remove previous file"));
+              }
             }
 
-            file.createNewFile();
+            if (!file.createNewFile()) {
+              return Observable.error(new Exception("Unable to create file"));
+            }
 
             Request request = new Request.Builder().url(downloadUrl).build();
             Response response = httpClient.newCall(request).execute();
