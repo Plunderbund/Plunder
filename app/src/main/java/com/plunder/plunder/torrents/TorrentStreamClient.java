@@ -15,9 +15,6 @@ public class TorrentStreamClient extends TorrentClient implements TorrentListene
   private Torrent torrent;
   private StreamStatus streamStatus;
 
-  private int previousOffset;
-  private int previousLength;
-
   public TorrentStreamClient(TorrentStream torrentStream) {
     this.torrentStream = torrentStream;
     torrentStream.addListener(this);
@@ -75,24 +72,8 @@ public class TorrentStreamClient extends TorrentClient implements TorrentListene
     return null;
   }
 
-  @Override public void setInterested(int offset, int length) {
-    TorrentHandle torrentHandle = torrent.getTorrentHandle();
-    int pieceLength = torrentHandle.torrentFile().pieceLength();
-
-    if (previousLength != 0) {
-      for (int i = previousOffset; i < previousOffset + previousLength; i += pieceLength) {
-        torrentHandle.piecePriority(i, Priority.IGNORE);
-      }
-    }
-
-    for (int i = offset; i < offset + length; i += pieceLength) {
-      if (!torrent.hasInterestedBytes(offset)) {
-        torrent.setInterestedBytes(offset);
-      }
-    }
-
-    previousOffset = offset;
-    previousLength = length;
+  @Override public void setDownloadOffset(long bytes) {
+    torrent.setInterestedBytes(bytes);
   }
 
   @Override public boolean hasBytes(int offset, int length) {

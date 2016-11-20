@@ -48,7 +48,7 @@ public abstract class TorrentClient {
 
   public abstract @Nullable File getFile();
 
-  public abstract void setInterested(int offset, int length);
+  public abstract void setDownloadOffset(long bytes);
 
   public abstract boolean hasBytes(int offset, int length);
 

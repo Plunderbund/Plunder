@@ -22,8 +22,6 @@ public class TorrentFileStream extends FilterInputStream {
   }
 
   @Override public int read(byte[] b, int off, int len) throws IOException {
-    client.setInterested(off, len);
-
     while (alive) {
       if (client.hasBytes(off, len)) {
         break;

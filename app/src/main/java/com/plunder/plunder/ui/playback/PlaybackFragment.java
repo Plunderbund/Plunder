@@ -77,10 +77,12 @@ public class PlaybackFragment extends BasePlaybackOverlayFragment
   private MediaPlayer mediaPlayer;
   private boolean isMetadataSet = false;
 
-  private final MediaPlayer.EventListener playerListener = new PlayerListener(this);
+  private MediaPlayer.EventListener playerListener = new PlayerListener();
 
   private int videoWidth;
   private int videoHeight;
+
+  private long bufferedPosition;
 
   public static PlaybackFragment newInstance(UUID downloadId, Movie movie) {
     PlaybackFragment fragment = new PlaybackFragment();
@@ -374,7 +376,7 @@ public class PlaybackFragment extends BasePlaybackOverlayFragment
   }
 
   public long getBufferedPosition() {
-    return 0L;
+    return bufferedPosition;
   }
 
   public long getCurrentPosition() {
@@ -563,35 +565,36 @@ public class PlaybackFragment extends BasePlaybackOverlayFragment
     }
   }
 
-  private static class PlayerListener implements MediaPlayer.EventListener {
-    private final WeakReference<PlaybackFragment> owner;
-
-    public PlayerListener(PlaybackFragment owner) {
-      this.owner = new WeakReference<>(owner);
-    }
-
+  private class PlayerListener implements MediaPlayer.EventListener {
     @Override public void onEvent(MediaPlayer.Event event) {
-      PlaybackFragment player = owner.get();
-
       switch (event.type) {
         case MediaPlayer.Event.Opening:
-          player.isMetadataSet = false;
+          isMetadataSet = false;
           break;
         case MediaPlayer.Event.EndReached:
-          player.releasePlayer();
+          releasePlayer();
 
-          if (player.mediaController != null) {
-            player.mediaController.getTransportControls().skipToNext();
+          if (mediaController != null) {
+            mediaController.getTransportControls().skipToNext();
           }
           break;
         case MediaPlayer.Event.Playing:
-          if (!player.isMetadataSet) {
-            player.updateMetadata();
-            player.isMetadataSet = true;
+          if (!isMetadataSet) {
+            updateMetadata();
+            isMetadataSet = true;
           }
+
+          setPlaybackState(PlaybackState.STATE_PLAYING);
           break;
         case MediaPlayer.Event.Paused:
+          setPlaybackState(PlaybackState.STATE_PAUSED);
+          break;
         case MediaPlayer.Event.Stopped:
+          setPlaybackState(PlaybackState.STATE_STOPPED);
+          break;
+        case MediaPlayer.Event.Buffering:
+          bufferedPosition = (long)(event.getBuffering() * mediaPlayer.getLength());
+          break;
         default:
           break;
       }

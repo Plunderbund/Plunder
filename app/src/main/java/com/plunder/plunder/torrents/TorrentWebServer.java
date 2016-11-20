@@ -88,6 +88,8 @@ public class TorrentWebServer extends NanoHTTPD {
             newLen = 0;
           }
 
+          torrentClient.setDownloadOffset(startFrom);
+
           FileInputStream fis = new FileInputStream(file);
           TorrentFileStream tis = new TorrentFileStream(torrentClient, fis);
           tis.skip(startFrom);
@@ -119,6 +121,8 @@ public class TorrentWebServer extends NanoHTTPD {
           res = newFixedLengthResponse(Response.Status.NOT_MODIFIED, mime, "");
           res.addHeader("ETag", etag);
         } else {
+          torrentClient.setDownloadOffset(0);
+
           FileInputStream fis = new FileInputStream(file);
           TorrentFileStream tis = new TorrentFileStream(torrentClient, fis);
 
