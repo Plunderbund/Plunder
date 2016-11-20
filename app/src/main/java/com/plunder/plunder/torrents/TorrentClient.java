@@ -48,6 +48,10 @@ public abstract class TorrentClient {
 
   public abstract @Nullable File getFile();
 
+  public abstract void setInterested(int offset, int length);
+
+  public abstract boolean hasBytes(int offset, int length);
+
   public void addListener(Listener listener) {
     listeners.add(new WeakReference<>(listener));
   }

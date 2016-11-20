@@ -8,6 +8,7 @@ import android.media.MediaMetadata;
 import android.media.session.MediaController;
 import android.media.session.MediaSession;
 import android.media.session.PlaybackState;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.ParcelUuid;
 import android.support.annotation.NonNull;
@@ -44,6 +45,7 @@ import org.videolan.libvlc.IVLCVout;
 import org.videolan.libvlc.LibVLC;
 import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaPlayer;
+import timber.log.Timber;
 
 public class PlaybackFragment extends BasePlaybackOverlayFragment
     implements PlaybackView, IVLCVout.Callback {
@@ -75,7 +77,7 @@ public class PlaybackFragment extends BasePlaybackOverlayFragment
   private MediaPlayer mediaPlayer;
   private boolean isMetadataSet = false;
 
-  private final MediaPlayer.EventListener playerListener = new MyPlayerListener(this);
+  private final MediaPlayer.EventListener playerListener = new PlayerListener(this);
 
   private int videoWidth;
   private int videoHeight;
@@ -287,7 +289,7 @@ public class PlaybackFragment extends BasePlaybackOverlayFragment
     surfaceView.invalidate();
   }
 
-  private void createPlayer(String mediaPath) {
+  private void createPlayer(String url) {
     releasePlayer();
 
     if (surfaceHolder == null) {
@@ -305,15 +307,16 @@ public class PlaybackFragment extends BasePlaybackOverlayFragment
       vlcOut.addCallback(this);
       vlcOut.attachViews();
 
-      Media media = new Media(libVLC, mediaPath);
+      Media media = new Media(libVLC, Uri.parse(url));
       mediaPlayer.setMedia(media);
       mediaPlayer.play();
     } catch (Exception e) {
+      Timber.e(e, "Failed to create VLC");
     }
   }
 
-  @Override public void setVideoFile(File file) {
-    createPlayer(file.getAbsolutePath());
+  @Override public void setAddress(String address) {
+    createPlayer(address);
     setPlaybackState(PlaybackState.STATE_PAUSED);
     playPause(true);
   }
@@ -358,12 +361,12 @@ public class PlaybackFragment extends BasePlaybackOverlayFragment
     }
 
     if (position > mediaPlayer.getLength()) {
-      mediaPlayer.setTime(mediaPlayer.getLength());
+      position = mediaPlayer.getLength();
     } else if (position < 0) {
-      mediaPlayer.setTime(0L);
-    } else {
-      mediaPlayer.setTime(position);
+      position = 0;
     }
+
+    mediaPlayer.setTime(position);
   }
 
   private void updatePlaybackRow() {
@@ -521,10 +524,9 @@ public class PlaybackFragment extends BasePlaybackOverlayFragment
       }
 
       if (mediaPlayer.getTime() != -1) {
-        // Fast forward 10 seconds.
         int prevState = getPlaybackState();
         setPlaybackState(PlaybackState.STATE_FAST_FORWARDING);
-        setPosition(mediaPlayer.getTime() + (10 * 1000));
+        setPosition(mediaPlayer.getTime() + (30 * 1000));
         setPlaybackState(prevState);
       }
     }
@@ -534,11 +536,10 @@ public class PlaybackFragment extends BasePlaybackOverlayFragment
         return;
       }
 
-      // Rewind 10 seconds.
       int prevState = getPlaybackState();
       setPlaybackState(PlaybackState.STATE_REWINDING);
 
-      setPosition(mediaPlayer.getTime() - (10 * 1000));
+      setPosition(mediaPlayer.getTime() - (30 * 1000));
       setPlaybackState(prevState);
     }
 
@@ -562,15 +563,15 @@ public class PlaybackFragment extends BasePlaybackOverlayFragment
     }
   }
 
-  private static class MyPlayerListener implements MediaPlayer.EventListener {
-    private final WeakReference<PlaybackFragment> mOwner;
+  private static class PlayerListener implements MediaPlayer.EventListener {
+    private final WeakReference<PlaybackFragment> owner;
 
-    public MyPlayerListener(PlaybackFragment owner) {
-      mOwner = new WeakReference<>(owner);
+    public PlayerListener(PlaybackFragment owner) {
+      this.owner = new WeakReference<>(owner);
     }
 
     @Override public void onEvent(MediaPlayer.Event event) {
-      PlaybackFragment player = mOwner.get();
+      PlaybackFragment player = owner.get();
 
       switch (event.type) {
         case MediaPlayer.Event.Opening:

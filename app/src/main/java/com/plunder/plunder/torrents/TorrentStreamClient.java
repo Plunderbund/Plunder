@@ -1,6 +1,9 @@
 package com.plunder.plunder.torrents;
 
 import android.support.annotation.Nullable;
+import com.frostwire.jlibtorrent.Priority;
+import com.frostwire.jlibtorrent.TorrentHandle;
+import com.frostwire.jlibtorrent.alerts.Alert;
 import com.github.se_bastiaan.torrentstream.StreamStatus;
 import com.github.se_bastiaan.torrentstream.Torrent;
 import com.github.se_bastiaan.torrentstream.TorrentStream;
@@ -11,6 +14,9 @@ public class TorrentStreamClient extends TorrentClient implements TorrentListene
   private final TorrentStream torrentStream;
   private Torrent torrent;
   private StreamStatus streamStatus;
+
+  private int previousOffset;
+  private int previousLength;
 
   public TorrentStreamClient(TorrentStream torrentStream) {
     this.torrentStream = torrentStream;
@@ -67,6 +73,38 @@ public class TorrentStreamClient extends TorrentClient implements TorrentListene
     }
 
     return null;
+  }
+
+  @Override public void setInterested(int offset, int length) {
+    TorrentHandle torrentHandle = torrent.getTorrentHandle();
+    int pieceLength = torrentHandle.torrentFile().pieceLength();
+
+    if (previousLength != 0) {
+      for (int i = previousOffset; i < previousOffset + previousLength; i += pieceLength) {
+        torrentHandle.piecePriority(i, Priority.IGNORE);
+      }
+    }
+
+    for (int i = offset; i < offset + length; i += pieceLength) {
+      if (!torrent.hasInterestedBytes(offset)) {
+        torrent.setInterestedBytes(offset);
+      }
+    }
+
+    previousOffset = offset;
+    previousLength = length;
+  }
+
+  @Override public boolean hasBytes(int offset, int length) {
+    int pieceLength = torrent.getTorrentHandle().torrentFile().pieceLength();
+
+    for (int i = offset; i < offset + length; i += pieceLength) {
+      if (!torrent.hasBytes(offset)) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   @Override public void onStreamPrepared(Torrent torrent) {

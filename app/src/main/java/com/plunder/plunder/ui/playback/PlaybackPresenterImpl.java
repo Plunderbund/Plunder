@@ -10,16 +10,21 @@ import com.plunder.plunder.domain.models.TvSeason;
 import com.plunder.plunder.domain.models.TvShow;
 import com.plunder.plunder.torrents.TorrentClient;
 import com.plunder.plunder.torrents.TorrentManager;
+import com.plunder.plunder.torrents.TorrentWebServer;
 import com.plunder.plunder.ui.common.BaseFragmentPresenter;
 import com.plunder.plunder.ui.viewmodels.MovieViewModel;
 import com.plunder.plunder.ui.viewmodels.TvEpisodeViewModel;
+import java.io.IOException;
 import java.util.UUID;
 import org.greenrobot.eventbus.EventBus;
+import timber.log.Timber;
 
 public class PlaybackPresenterImpl extends BaseFragmentPresenter<PlaybackView>
     implements PlaybackPresenter {
   private final TorrentManager torrentManager;
   private TorrentClient torrentClient;
+  private TorrentWebServer webServer;
+
   private UUID downloadId;
   private Movie movie;
   private TvShow tvShow;
@@ -102,7 +107,19 @@ public class PlaybackPresenterImpl extends BaseFragmentPresenter<PlaybackView>
       torrentClient = torrentManager.getClientById(downloadId);
 
       if (torrentClient != null) {
-        view.setVideoFile(torrentClient.getFile());
+        if (webServer != null) {
+          webServer.stop();
+        }
+
+        webServer = new TorrentWebServer(torrentClient);
+
+        try {
+          webServer.start();
+        } catch (IOException e) {
+          Timber.e(e, "Failed to start torrent web server");
+        }
+
+        view.setAddress(webServer.getAddress());
       }
     }
   }
@@ -113,6 +130,11 @@ public class PlaybackPresenterImpl extends BaseFragmentPresenter<PlaybackView>
     if (torrentClient != null) {
       torrentClient.stop();
       torrentClient = null;
+    }
+
+    if (webServer != null) {
+      webServer.stop();
+      webServer = null;
     }
   }
 }

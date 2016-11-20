@@ -8,5 +8,5 @@ import java.io.File;
 public interface PlaybackView extends FragmentView {
   void setMediaDetails(@NonNull MediaViewModel viewModel);
 
-  void setVideoFile(File file);
+  void setAddress(String address);
 }

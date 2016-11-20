@@ -59,6 +59,7 @@ android {
       applicationIdSuffix ".debug"
       versionNameSuffix "-debug"
       resValue "string", "app_name", "Plunder (debug)"
+      minifyEnabled false
     }
     release {
       resValue "string", "app_name", "Plunder"
@@ -140,6 +141,7 @@ dependencies {
   compile group: 'org.kohsuke', name: 'github-api', version: '1.79'
   compile group: 'com.github.zafarkhaja', name: 'java-semver', version: '0.9.0'
   compile 'com.tbruyelle.rxpermissions:rxpermissions:0.9.0@aar'
+  compile 'org.nanohttpd:nanohttpd:2.3.1'
 }
 
 apply from: "signing.gradle"
