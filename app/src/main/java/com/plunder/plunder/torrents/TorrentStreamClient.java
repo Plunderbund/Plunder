@@ -9,6 +9,9 @@ import com.github.se_bastiaan.torrentstream.Torrent;
 import com.github.se_bastiaan.torrentstream.TorrentStream;
 import com.github.se_bastiaan.torrentstream.listeners.TorrentListener;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import timber.log.Timber;
 
 public class TorrentStreamClient extends TorrentClient implements TorrentListener {
   private final TorrentStream torrentStream;
@@ -72,20 +75,21 @@ public class TorrentStreamClient extends TorrentClient implements TorrentListene
     return null;
   }
 
-  @Override public void setDownloadOffset(long bytes) {
-    torrent.setInterestedBytes(bytes);
-  }
-
-  @Override public boolean hasBytes(int offset, int length) {
-    int pieceLength = torrent.getTorrentHandle().torrentFile().pieceLength();
-
-    for (int i = offset; i < offset + length; i += pieceLength) {
-      if (!torrent.hasBytes(offset)) {
-        return false;
+  @Override @Nullable public InputStream getInputStream() {
+    if (torrent != null) {
+      try {
+        return torrent.getVideoStream();
+      } catch (FileNotFoundException e) {
+        Timber.e(e, "Failed to load video stream");
+        return null;
       }
     }
 
-    return true;
+    return null;
+  }
+
+  @Override public void setDownloadOffset(long bytes) {
+    torrent.setInterestedBytes(bytes);
   }
 
   @Override public void onStreamPrepared(Torrent torrent) {

@@ -4,6 +4,7 @@ import android.support.annotation.Nullable;
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 import java.io.File;
+import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,9 +49,9 @@ public abstract class TorrentClient {
 
   public abstract @Nullable File getFile();
 
-  public abstract void setDownloadOffset(long bytes);
+  public abstract @Nullable InputStream getInputStream();
 
-  public abstract boolean hasBytes(int offset, int length);
+  public abstract void setDownloadOffset(long bytes);
 
   public void addListener(Listener listener) {
     listeners.add(new WeakReference<>(listener));

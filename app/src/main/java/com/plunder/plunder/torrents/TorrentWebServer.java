@@ -4,6 +4,7 @@ import fi.iki.elonen.NanoHTTPD;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Locale;
 import java.util.Map;
 import timber.log.Timber;
@@ -90,11 +91,10 @@ public class TorrentWebServer extends NanoHTTPD {
 
           torrentClient.setDownloadOffset(startFrom);
 
-          FileInputStream fis = new FileInputStream(file);
-          TorrentFileStream tis = new TorrentFileStream(torrentClient, fis);
-          tis.skip(startFrom);
+          InputStream inputStream = torrentClient.getInputStream();
+          inputStream.skip(startFrom);
 
-          res = newFixedLengthResponse(Response.Status.PARTIAL_CONTENT, mime, tis, newLen);
+          res = newFixedLengthResponse(Response.Status.PARTIAL_CONTENT, mime, inputStream, newLen);
           res.addHeader("Accept-Ranges", "bytes");
           res.addHeader("Content-Length", "" + newLen);
           res.addHeader("Content-Range", "bytes " + startFrom + "-" + endAt + "/" + fileLen);
@@ -123,10 +123,8 @@ public class TorrentWebServer extends NanoHTTPD {
         } else {
           torrentClient.setDownloadOffset(0);
 
-          FileInputStream fis = new FileInputStream(file);
-          TorrentFileStream tis = new TorrentFileStream(torrentClient, fis);
-
-          res = newFixedLengthResponse(Response.Status.OK, mime, tis, (int) file.length());
+          InputStream inputStream = torrentClient.getInputStream();
+          res = newFixedLengthResponse(Response.Status.OK, mime, inputStream, (int) file.length());
           res.addHeader("Accept-Ranges", "bytes");
           res.addHeader("Content-Length", "" + fileLen);
           res.addHeader("ETag", etag);
