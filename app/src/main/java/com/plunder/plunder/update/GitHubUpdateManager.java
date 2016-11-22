@@ -19,6 +19,7 @@ import org.kohsuke.github.GHRelease;
 import org.kohsuke.github.GitHub;
 import rx.Observable;
 import rx.functions.Func1;
+import timber.log.Timber;
 
 public class GitHubUpdateManager extends BaseUpdateManager {
   private OkHttpClient httpClient;
@@ -81,7 +82,8 @@ public class GitHubUpdateManager extends BaseUpdateManager {
       }
 
       if (builder == null) {
-        return Observable.error(new Exception("Couldn't locate an APK in the asset list"));
+        Timber.w("Couldn't locate an APK in the asset list");
+        return Observable.empty();
       }
 
       Update update = builder.build();
