@@ -22,8 +22,7 @@ public class TorrentWebServer extends NanoHTTPD {
   }
 
   public String getAddress() {
-    return String.format(Locale.getDefault(), "http://localhost:%d/%s", getListeningPort(),
-        torrentClient.getFile() != null ? torrentClient.getFile().getName() : "unknown.mp4");
+    return String.format(Locale.getDefault(), "http://localhost:%d/", getListeningPort());
   }
 
   @Override public Response serve(IHTTPSession session) {
