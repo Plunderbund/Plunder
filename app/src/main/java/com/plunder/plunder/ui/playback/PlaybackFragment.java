@@ -323,10 +323,6 @@ public class PlaybackFragment extends BasePlaybackOverlayFragment
     playPause(true);
   }
 
-  @Override public void onHardwareAccelerationError(IVLCVout vlcVout) {
-
-  }
-
   private void createMediaSession() {
     if (mediaSession == null) {
       mediaSession = new MediaSession(getActivity(), "Shun");
@@ -428,7 +424,10 @@ public class PlaybackFragment extends BasePlaybackOverlayFragment
     PlaybackState.Builder stateBuilder =
         new PlaybackState.Builder().setActions(getAvailableActions(state));
     stateBuilder.setState(state, position, 1.0f);
-    mediaSession.setPlaybackState(stateBuilder.build());
+
+    if (mediaSession != null) {
+      mediaSession.setPlaybackState(stateBuilder.build());
+    }
   }
 
   private void playPause(boolean doPlay) {
