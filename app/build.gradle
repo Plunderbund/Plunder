@@ -130,7 +130,7 @@ dependencies {
   compile 'com.squareup.okhttp3:okhttp:3.4.2'
 
   // media
-  compile 'com.github.Plunderbund:TorrentStream-Android:948e76cf6e'
+  compile 'com.github.Plunderbund:TorrentStream-Android:ad2b503cee'
   compile 'com.uwetrottmann.tmdb2:tmdb-java:1.3.0'
   compile 'com.github.Plunderbund:vlc-android-sdk:47e091c1e7'
 
