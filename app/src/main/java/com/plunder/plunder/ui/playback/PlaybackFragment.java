@@ -499,6 +499,10 @@ public class PlaybackFragment extends BasePlaybackOverlayFragment
     setAdapter(rowsAdapter);
   }
 
+  @Override public void onHardwareAccelerationError(IVLCVout ivlcVout) {
+    
+  }
+
   private class MediaSessionCallback extends MediaSession.Callback {
     @Override public void onPlay() {
       playPause(true);

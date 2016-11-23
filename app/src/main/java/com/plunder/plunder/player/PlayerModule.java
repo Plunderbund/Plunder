@@ -7,7 +7,7 @@ import dagger.Provides;
 import org.videolan.libvlc.LibVLC;
 
 @Module public class PlayerModule {
-  @Provides @AppScope LibVLC provideLibVLC(Application application) {
-    return new LibVLC(application);
+  @Provides @AppScope LibVLC provideLibVLC() {
+    return new LibVLC();
   }
 }
