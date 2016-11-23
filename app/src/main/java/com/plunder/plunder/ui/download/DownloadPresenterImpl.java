@@ -1,8 +1,10 @@
 package com.plunder.plunder.ui.download;
 
 import android.content.Context;
+import android.database.Observable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.util.Pair;
 import com.google.common.base.Preconditions;
 import com.plunder.plunder.domain.models.Movie;
 import com.plunder.plunder.domain.models.TvEpisode;
@@ -16,6 +18,7 @@ import com.plunder.plunder.ui.events.PlayTvShowSource;
 import com.plunder.plunder.ui.viewmodels.MovieViewModel;
 import com.plunder.plunder.ui.viewmodels.TvShowViewModel;
 import com.plunder.provider.search.SearchResult;
+import java.util.concurrent.TimeUnit;
 import org.greenrobot.eventbus.EventBus;
 
 public class DownloadPresenterImpl extends BaseFragmentPresenter<DownloadView>
@@ -123,15 +126,22 @@ public class DownloadPresenterImpl extends BaseFragmentPresenter<DownloadView>
   }
 
   @Override public void onPrepared(TorrentClient client) {
-
   }
 
   @Override public void onStarted(TorrentClient client) {
+    rx.Observable.just(torrentClient)
+        .compose(getLifecycleTransformer())
+        .repeatWhen(completed -> completed.delay(500, TimeUnit.MILLISECONDS))
+        .subscribe(subscribe -> {
+          DownloadView view = getView();
 
+          if (view != null) {
+            view.setProgress(client.getBufferProgress(), client.getDownloadSpeed());
+          }
+        });
   }
 
   @Override public void onError(TorrentClient client) {
-
   }
 
   @Override public void onReady(TorrentClient client) {
@@ -145,14 +155,8 @@ public class DownloadPresenterImpl extends BaseFragmentPresenter<DownloadView>
   }
 
   @Override public void onProgress(TorrentClient client) {
-    DownloadView view = getView();
-
-    if (view != null) {
-      view.setProgress(client.getBufferProgress(), client.getDownloadSpeed());
-    }
   }
 
   @Override public void onStopped(TorrentClient client) {
-
   }
 }

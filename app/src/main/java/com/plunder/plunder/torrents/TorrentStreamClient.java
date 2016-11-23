@@ -3,6 +3,7 @@ package com.plunder.plunder.torrents;
 import android.support.annotation.Nullable;
 import com.frostwire.jlibtorrent.Priority;
 import com.frostwire.jlibtorrent.TorrentHandle;
+import com.frostwire.jlibtorrent.TorrentStatus;
 import com.frostwire.jlibtorrent.alerts.Alert;
 import com.github.se_bastiaan.torrentstream.StreamStatus;
 import com.github.se_bastiaan.torrentstream.Torrent;
@@ -35,9 +36,13 @@ public class TorrentStreamClient extends TorrentClient implements TorrentListene
     }
   }
 
+  protected TorrentStatus getTorrentStatus() {
+    return torrentStream.getCurrentTorrent().getTorrentHandle().status();
+  }
+
   @Override public float getProgress() {
     if (streamStatus != null) {
-      return streamStatus.progress;
+      return getTorrentStatus().progress();
     }
 
     return 0;
@@ -53,7 +58,7 @@ public class TorrentStreamClient extends TorrentClient implements TorrentListene
 
   @Override public int getSeeds() {
     if (streamStatus != null) {
-      return streamStatus.seeds;
+      return getTorrentStatus().numSeeds();
     }
 
     return 0;
@@ -61,7 +66,7 @@ public class TorrentStreamClient extends TorrentClient implements TorrentListene
 
   @Override public float getDownloadSpeed() {
     if (streamStatus != null) {
-      return streamStatus.downloadSpeed;
+      return getTorrentStatus().downloadRate();
     }
 
     return 0;
