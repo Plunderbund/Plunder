@@ -40,13 +40,18 @@ public class TorrentManager {
     }
   }
 
-  public TorrentClient create(String url) {
+  private UUID generateId() {
     UUID id;
 
     do {
-      id = createId();
+      id = UUID.randomUUID();
     } while (clients.containsKey(id));
 
+    return id;
+  }
+
+  public TorrentClient create(String url) {
+    UUID id = generateId();
     TorrentClient client = clientProvider.get();
     client.setId(id);
     client.setUrl(url);
@@ -61,9 +66,5 @@ public class TorrentManager {
     }
 
     return null;
-  }
-
-  private static UUID createId() {
-    return UUID.randomUUID();
   }
 }
