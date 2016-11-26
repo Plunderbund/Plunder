@@ -500,7 +500,7 @@ public class PlaybackFragment extends BasePlaybackOverlayFragment
   }
 
   @Override public void onHardwareAccelerationError(IVLCVout ivlcVout) {
-    
+
   }
 
   private class MediaSessionCallback extends MediaSession.Callback {
@@ -528,10 +528,12 @@ public class PlaybackFragment extends BasePlaybackOverlayFragment
         return;
       }
 
-      if (mediaPlayer.getTime() != -1) {
+      final long time = mediaPlayer.getTime();
+
+      if (time != -1) {
         int prevState = getPlaybackState();
         setPlaybackState(PlaybackState.STATE_FAST_FORWARDING);
-        setPosition(mediaPlayer.getTime() + (30 * 1000));
+        setPosition(time + (10 * 1000));
         setPlaybackState(prevState);
       }
     }
@@ -543,8 +545,7 @@ public class PlaybackFragment extends BasePlaybackOverlayFragment
 
       int prevState = getPlaybackState();
       setPlaybackState(PlaybackState.STATE_REWINDING);
-
-      setPosition(mediaPlayer.getTime() - (30 * 1000));
+      setPosition(mediaPlayer.getTime() - (10 * 1000));
       setPlaybackState(prevState);
     }
 

@@ -20,7 +20,7 @@ public class PlaybackControlHelper extends PlaybackControlGlue {
   private static final int[] SEEK_SPEEDS = { 2 }; // A single seek speed for fast-forward / rewind.
   private static final int DEFAULT_UPDATE_PERIOD = 500;
   private static final int UPDATE_PERIOD = 16;
-  Drawable mMediaArt;
+  private Drawable mMediaArt;
   private boolean mIsPlaying;
   private int mSpeed;
   private final PlaybackFragment mFragment;
