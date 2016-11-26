@@ -5,12 +5,11 @@ import com.plunder.plunder.BuildConfig;
 
 public abstract class BaseUpdateManager implements UpdateManager {
   protected boolean isEnabled() {
-    return true;
-    /*if (BuildConfig.DEBUG) {
+    if (BuildConfig.DEBUG) {
       return false;
     }
 
-    return true;*/
+    return true;
   }
 
   protected Version getCurrentVersion() {

@@ -6,6 +6,8 @@ import android.content.pm.PackageManager;
 import android.support.annotation.Nullable;
 import com.plunder.plunder.domain.DomainComponent;
 import com.plunder.plunder.domain.catalog.CatalogManager;
+import com.plunder.plunder.github.GithubManager;
+import com.plunder.plunder.github.GithubModule;
 import com.plunder.plunder.torrents.TorrentManager;
 import com.plunder.plunder.torrents.TorrentModule;
 import com.plunder.plunder.executors.ExecutorModule;
@@ -27,7 +29,7 @@ import org.videolan.libvlc.LibVLC;
     dependencies = DomainComponent.class,
     modules = {
         AppModule.class, ProviderModule.class, ExecutorModule.class, TorrentModule.class,
-        PlayerModule.class, UpdateModule.class,
+        PlayerModule.class, UpdateModule.class, GithubModule.class,
     }) public interface AppComponent {
   void inject(App app);
 
@@ -58,4 +60,6 @@ import org.videolan.libvlc.LibVLC;
   DownloadManager getDownloadManager();
 
   OkHttpClient getOkHttpClient();
+
+  GithubManager getGithubManager();
 }

@@ -10,6 +10,7 @@ import android.support.multidex.MultiDex;
 import com.plunder.plunder.domain.DaggerDomainComponent;
 import com.plunder.plunder.domain.DomainComponent;
 import com.plunder.plunder.domain.catalog.CatalogModule;
+import com.plunder.plunder.github.GithubModule;
 import com.plunder.plunder.torrents.TorrentModule;
 import com.plunder.plunder.executors.ExecutorModule;
 import com.plunder.plunder.player.PlayerModule;
@@ -60,6 +61,7 @@ public class App extends Application {
         .torrentModule(new TorrentModule())
         .playerModule(new PlayerModule())
         .updateModule(new UpdateModule())
+        .githubModule(new GithubModule())
         .build();
   }
 

@@ -3,6 +3,7 @@ package com.plunder.plunder.update;
 import android.app.Application;
 import android.os.Environment;
 import com.plunder.plunder.AppScope;
+import com.plunder.plunder.github.GithubManager;
 import dagger.Module;
 import dagger.Provides;
 import java.io.File;
@@ -16,7 +17,7 @@ import okhttp3.OkHttpClient;
   }
 
   @Provides @AppScope public UpdateManager provideUpdateManager(OkHttpClient httpClient,
-      @Named("UpdateDirectory") String updateDirectory) {
-    return new GitHubUpdateManager(httpClient, updateDirectory);
+      GithubManager githubManager, @Named("UpdateDirectory") String updateDirectory) {
+    return new GitHubUpdateManager(httpClient, githubManager, updateDirectory);
   }
 }

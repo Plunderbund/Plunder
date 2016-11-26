@@ -5,6 +5,9 @@ import android.util.Pair;
 import com.annimon.stream.Stream;
 import com.github.zafarkhaja.semver.Version;
 import com.plunder.plunder.BuildConfig;
+import com.plunder.plunder.github.GithubAsset;
+import com.plunder.plunder.github.GithubManager;
+import com.plunder.plunder.github.GithubRelease;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -23,22 +26,14 @@ import timber.log.Timber;
 
 public class GitHubUpdateManager extends BaseUpdateManager {
   private OkHttpClient httpClient;
+  private GithubManager githubManager;
   private String updateDirectory;
 
-  public GitHubUpdateManager(OkHttpClient httpClient, String updateDirectory) {
+  public GitHubUpdateManager(OkHttpClient httpClient, GithubManager githubManager,
+      String updateDirectory) {
     this.httpClient = httpClient;
+    this.githubManager = githubManager;
     this.updateDirectory = updateDirectory;
-  }
-
-  protected Observable<GHRelease> fetchReleases() {
-    return Observable.defer(() -> {
-      try {
-        GitHub gitHub = GitHub.connectAnonymously();
-        return Observable.from(gitHub.getRepository(BuildConfig.GITHUB_NAME).listReleases());
-      } catch (IOException e) {
-        return Observable.error(e);
-      }
-    });
   }
 
   @Override public Observable<Update> fetchUpdate() {
@@ -48,8 +43,8 @@ public class GitHubUpdateManager extends BaseUpdateManager {
 
     Version currentVersion = getCurrentVersion();
 
-    Func1<GHRelease, Observable<Version>> getVersion = release -> Observable.defer(() -> {
-      String versionName = release.getTagName();
+    Func1<GithubRelease, Observable<Version>> getVersion = release -> Observable.defer(() -> {
+      String versionName = release.tagName();
 
       if (versionName.indexOf('v') == 0) {
         versionName = versionName.substring(1);
@@ -59,24 +54,22 @@ public class GitHubUpdateManager extends BaseUpdateManager {
       return Observable.just(version);
     });
 
-    Func1<GHRelease, Observable<Update>> createUpdate = release -> Observable.defer(() -> {
-      List<GHAsset> assets;
+    Func1<GithubRelease, Observable<Update>> createUpdate = release -> Observable.defer(() -> {
+      List<GithubAsset> assets = release.assets();
 
-      try {
-        assets = release.getAssets();
-      } catch (IOException e) {
-        return Observable.error(e);
+      if (assets == null) {
+        return Observable.empty();
       }
 
       Update.Builder builder = null;
 
-      for (GHAsset asset : assets) {
-        String name = asset.getName();
+      for (GithubAsset asset : assets) {
+        String name = asset.name();
 
         if (name.endsWith(".apk")) {
           builder = Update.Builder()
-              .name(release.getTagName())
-              .downloadUrl(asset.getBrowserDownloadUrl());
+              .name(release.tagName())
+              .downloadUrl(asset.downloadUrl());
           break;
         }
       }
@@ -90,7 +83,7 @@ public class GitHubUpdateManager extends BaseUpdateManager {
       return Observable.just(update);
     });
 
-    return fetchReleases()
+    return githubManager.getReleases(BuildConfig.GITHUB_NAME)
         .filter(release -> !release.isDraft() && !release.isPrerelease()) // ignore drafts and pre-releases
         .flatMap(getVersion, Pair::new) // parse the semvar from the release name
         .filter(pair -> {
@@ -105,7 +98,7 @@ public class GitHubUpdateManager extends BaseUpdateManager {
         })
         .flatMap(pairs -> {
           if (pairs.size() > 0) {
-            Pair<GHRelease, Version> pair = pairs.get(0);
+            Pair<GithubRelease, Version> pair = pairs.get(0);
             return Observable.just(pair.first);
           }
 
